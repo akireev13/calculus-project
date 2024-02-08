@@ -10,6 +10,8 @@ class Plotter:
         self.root.geometry("1280x960")
         self.root.configure(bg='light grey')
 
+        self.is_plotted = False
+
         self.canvas_frame = tk.Frame(self.root, bg='light grey')
         self.canvas_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         self.button_frame = tk.Frame(self.root, bg='light grey')
@@ -28,8 +30,8 @@ class Plotter:
         self.plot_button = tk.Button(self.button_frame, text="Plot", command=self.plot_function, font=('Arial', 14), bg='light blue', relief=tk.RAISED, bd=2)
         self.plot_button.pack(pady=10, padx=10)
 
-        self.point = None  # added this line
-        self.text = None  # added this line
+        self.point = None  
+        self.text = None  
 
     def plot_function(self):
         x = symbols('x')
@@ -45,17 +47,18 @@ class Plotter:
         self.canvas.draw()
 
     def on_motion(self, event):
-        if event.xdata is not None and event.ydata is not None:
-            closest_index = np.abs(self.x_vals - event.xdata).argmin()
-            closest_x = self.x_vals[closest_index]
-            closest_y = self.y_vals[closest_index]
-            if self.point is not None:  # added this line
-                self.point.remove()  # added this line
-            self.point, = self.ax.plot([closest_x], [closest_y], 'ro')  # changed this line
-            if self.text is not None:  # added this line
-                self.text.remove()  # added this line
-            self.text = self.ax.text(closest_x, closest_y, f'({closest_x:.2f}, {closest_y:.2f})')  # added this line
-            self.canvas.draw()
+        if self.is_plotted:
+            if event.xdata is not None and event.ydata is not None:
+                closest_index = np.abs(self.x_vals - event.xdata).argmin()
+                closest_x = self.x_vals[closest_index]
+                closest_y = self.y_vals[closest_index]
+                if self.point is not None:  
+                    self.point.remove()  
+                self.point, = self.ax.plot([closest_x], [closest_y], 'ro')  
+                if self.text is not None:  
+                    self.text.remove()  
+                self.text = self.ax.text(closest_x, closest_y, f'({closest_x:.2f}, {closest_y:.2f})')  
+                self.canvas.draw()
 
     def run(self):
         self.root.mainloop()
