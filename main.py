@@ -33,6 +33,8 @@ class Plotter:
         self.point = None  
         self.text = None  
 
+        self.root.protocol("WM_DELETE_WINDOW", self.close_window)
+
     def plot_function(self):
         x = symbols('x')
         function_str = self.function_entry.get()
@@ -45,6 +47,10 @@ class Plotter:
         self.ax.axhline(0, color='black')
         self.ax.axvline(0, color='black')
         self.canvas.draw()
+
+    def close_window(self): 
+        # self.root.destroy()
+        exit()
 
     def on_motion(self, event):
         if self.is_plotted:
